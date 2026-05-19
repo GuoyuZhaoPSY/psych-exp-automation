@@ -1,0 +1,34 @@
+# Generated Code Validation
+
+- Platform: `psychopy`
+- Code: `/Users/guoyu/Documents/心理实验自动化/demo/stroop/psychopy/run_experiment.py`
+- Result: `28/28` checks passed
+
+- PASS: imports PsychoPy runtime
+- PASS: embeds trial event sequence
+- PASS: embeds block sequence
+- PASS: writes CSV data
+- PASS: collects keyboard responses with frame loop
+- PASS: converts event durations to frame counts
+- PASS: uses screen flips for timed event presentation
+- PASS: contains event id fixation
+- PASS: contains duration fixation=500ms
+- PASS: contains event id stimulus
+- PASS: contains response window stimulus=1500ms
+- PASS: contains event id feedback
+- PASS: contains duration feedback=500ms
+- PASS: contains event id iti
+- PASS: contains data field participant_id
+- PASS: contains data field block_id
+- PASS: contains data field block_type
+- PASS: contains data field trial_index_global
+- PASS: contains data field trial_index_in_block
+- PASS: contains data field event_id
+- PASS: contains data field word
+- PASS: contains data field ink_color_name
+- PASS: contains data field congruency
+- PASS: contains data field correct_key
+- PASS: contains data field response
+- PASS: contains data field rt
+- PASS: contains data field correct
+- PASS: contains data field timestamp

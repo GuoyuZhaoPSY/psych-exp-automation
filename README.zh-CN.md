@@ -1,0 +1,150 @@
+# 心理学实验自动化工作流
+
+[English](README.en.md) | 中文
+
+心理学实验自动化工作流帮助研究者把实验设计转化为一套可复现、可检查、可协作的编程流程：
+
+1. 撰写或澄清实验设计
+2. 编码为 `ExperimentSpec` YAML
+3. 生成可审阅的 Markdown 伪代码
+4. 生成 PsychoPy 或 Psychtoolbox 代码
+5. 根据规格验证生成代码
+
+这个项目的目标是降低心理学、认知科学、认知神经科学研究者的 coding 门槛，同时不把实验限制在固定的经典范式列表里。Stroop、Flanker、Go/No-Go、N-back 等名称可以作为参考标签，但系统真正使用的是通用的 `block -> trial -> event` 结构。
+
+## 核心原则
+
+- `experiment_spec.yaml` 是唯一真源。
+- 每个实验一个独立文件夹。
+- 实验文本可以直接使用中文、英文或其他自然语言。
+- 定时事件使用 frame-level timing control。
+- 第一版支持 PsychoPy 和 Psychtoolbox。
+- 生成代码必须在正式采集数据前人工检查、试运行和 pilot test。
+
+## 仓库结构
+
+```text
+psych-exp-automation/
+  demo/stroop/
+    experiment_spec.yaml
+    pseudocode.md
+    psychopy/
+    psychtoolbox/
+
+  scripts/
+    run_pipeline.py
+    validate_spec.py
+    render_pseudocode.py
+    generate_code.py
+    validate_generated_code.py
+
+  schemas/
+    experiment_spec.schema.json
+
+  skills/psych-exp-automation/
+    SKILL.md
+    scripts/
+    schemas/
+    references/
+
+  tests/
+    fixtures/stroop/
+    test_pipeline.py
+```
+
+研究者自己的实验建议单独建文件夹：
+
+```text
+my_experiment/
+  experiment_spec.yaml
+  pseudocode.md
+  psychopy/
+  psychtoolbox/
+```
+
+## 快速开始
+
+运行 Stroop demo：
+
+```bash
+python3 scripts/run_pipeline.py demo/stroop/experiment_spec.yaml --platform psychopy
+python3 scripts/run_pipeline.py demo/stroop/experiment_spec.yaml --platform psychtoolbox
+```
+
+运行后会生成或更新：
+
+```text
+demo/stroop/pseudocode.md
+demo/stroop/psychopy/run_experiment.py
+demo/stroop/psychopy/validation_report.md
+demo/stroop/psychtoolbox/stroop_color_word.m
+demo/stroop/psychtoolbox/validation_report.md
+```
+
+## 作为 Codex Skill 安装
+
+发布到 GitHub 后，可以让 Codex 安装：
+
+```text
+Use skill-installer to install the skill from <your-name>/psych-exp-automation at skills/psych-exp-automation.
+```
+
+也可以手动安装：
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R skills/psych-exp-automation ~/.codex/skills/
+```
+
+安装后重启 Codex。
+
+## ExperimentSpec
+
+`ExperimentSpec` 是 YAML 中间表示。英文键用于机器解析，字段值和注释可以使用实验本身的自然语言。
+
+主要部分：
+
+- `metadata`：实验 ID、标题、目的
+- `runtime`：呈现给被试的语言和文本
+- `target_platform`：`psychopy` 或 `psychtoolbox`
+- `design`：变量、水平、随机化、平衡策略
+- `timing`：frame-level timing 设置
+- `conditions`：trial 级条件行
+- `trial_structure`：每个 trial 内的 event 序列
+- `blocks`：block 顺序、重复次数、反馈
+- `data`：输出字段
+- `output`：CSV 文件名和路径
+
+## 测试
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+测试会把 Stroop fixture 分别跑过 PsychoPy 和 Psychtoolbox 代码生成器，并验证生成结果。测试不会启动 PsychoPy 或 MATLAB。
+
+## 科学使用注意事项
+
+这个项目可以加速编程，但不能替代实验验证。正式采集数据前，请务必：
+
+- 检查生成代码
+- 运行 pilot
+- 在目标机器上验证时序
+- 检查数据输出
+- 对 EEG、fMRI、眼动或其他外部设备确认 trigger 和同步逻辑
+
+## 贡献
+
+欢迎贡献：
+
+- 新 event 类型，例如 image、audio、video、mouse response、slider、rating scale、scanner trigger
+- 更强的验证规则
+- 更好的 PsychoPy 或 Psychtoolbox 后端
+- 真实实验设计案例
+- 教学文档
+
+请参考 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 许可证
+
+本项目使用 [MIT License](LICENSE)。

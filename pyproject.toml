@@ -1,0 +1,11 @@
+[project]
+name = "psych-exp-automation"
+version = "0.1.0"
+description = "A workflow for generating PsychoPy and Psychtoolbox experiments from ExperimentSpec YAML."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Guoyu" }
+]
+keywords = ["psychology", "experiment", "psychopy", "psychtoolbox", "codex-skill"]

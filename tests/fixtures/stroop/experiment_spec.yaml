@@ -1,0 +1,191 @@
+# ExperimentSpec v0.1
+# 说明：英文键用于机器解析，中文注释用于研究者审阅。
+# 注意：Stroop 只是测试样例，不是系统支持范围的边界。
+version: "0.1.0"
+
+metadata:
+  experiment_id: "stroop_color_word"
+  # title: 实验标题；可直接使用中文、英文或其他自然语言。
+  title: "颜色-词 Stroop 任务"
+  # purpose: 研究目的；用于伪代码审阅，不直接限制代码生成。
+  purpose: "测量词义自动加工对墨水颜色命名的干扰。"
+  # paradigm_reference: 仅作参考标签，不作为系统能力边界。
+  paradigm_reference: "Stroop; optional label only"
+
+runtime:
+  # language: 实验运行时呈现给被试的自然语言。
+  language: "zh-CN"
+  # continue_key: 指导语页面继续按键。
+  continue_key: "space"
+  # welcome_text / end_text: 可由用户按实验语境改写。
+  welcome_text: "请根据指导语完成实验。"
+  end_text: "实验结束，感谢参与。"
+  continue_text: "按空格键继续"
+
+target_platform:
+  # default: 默认生成平台；可改为 psychtoolbox。
+  default: "psychopy"
+  # supported: 当前项目第一版生成器支持的平台。
+  supported: ["psychopy", "psychtoolbox"]
+
+participant:
+  # collection_mode: 运行时弹窗/命令行采集被试编号。
+  collection_mode: "runtime_dialog"
+  fields:
+    - id: "participant_id"
+      # label: 采集界面显示给实验员或被试看的字段名。
+      label: "被试编号"
+      required: true
+
+design:
+  # design_type: 可写 natural language；不限定经典范式。
+  design_type: "within_subject"
+  independent_variables:
+    - id: "congruency"
+      # name: 变量的自然语言名称。
+      name: "一致性"
+      # levels: 变量水平；可直接使用实验说明中的自然语言。
+      levels: ["一致", "不一致"]
+  dependent_variables:
+    - id: "rt"
+      name: "反应时"
+      unit: "ms"
+    - id: "correct"
+      name: "正确性"
+      unit: "boolean"
+  randomization: "每个 block 内随机化 trial 顺序。"
+  counterbalancing: "本示例不需要额外平衡。"
+
+display:
+  # 背景和默认文字设置；不同平台生成器会尽量映射。
+  background_color: [0, 0, 0]
+  text_color: [1, 1, 1]
+  font_size: 48
+  screen_mode: "windowed"
+
+timing:
+  # control: 事件时长控制方式。frame 表示所有定时 event 都按屏幕刷新帧控制。
+  control: "frame"
+  # frame_rate_fallback_hz: 无法测得真实刷新率时使用的备用刷新率为60。
+  frame_rate_fallback_hz: 60
+  # duration_rounding: 毫秒时长换算为 frame 数时的取整方式。
+  duration_rounding: "nearest_frame"
+
+response_mapping:
+  # 键位映射。Psychtoolbox 生成器会转换为 KbName 识别。
+  red: "r"
+  green: "g"
+  blue: "b"
+  yellow: "y"
+
+conditions:
+  # 每一行都是一个 trial 条件。复杂实验可以用脚本生成 conditions.csv 后引用。
+  - word: "红"
+    ink_color_name: "red"
+    ink_color_rgb: [1, -1, -1]
+    congruency: "congruent"
+    correct_key: "r"
+  - word: "绿"
+    ink_color_name: "green"
+    ink_color_rgb: [-1, 1, -1]
+    congruency: "congruent"
+    correct_key: "g"
+  - word: "蓝"
+    ink_color_name: "blue"
+    ink_color_rgb: [-1, -1, 1]
+    congruency: "congruent"
+    correct_key: "b"
+  - word: "黄"
+    ink_color_name: "yellow"
+    ink_color_rgb: [1, 1, -1]
+    congruency: "congruent"
+    correct_key: "y"
+  - word: "红"
+    ink_color_name: "green"
+    ink_color_rgb: [-1, 1, -1]
+    congruency: "incongruent"
+    correct_key: "g"
+  - word: "绿"
+    ink_color_name: "blue"
+    ink_color_rgb: [-1, -1, 1]
+    congruency: "incongruent"
+    correct_key: "b"
+  - word: "蓝"
+    ink_color_name: "yellow"
+    ink_color_rgb: [1, 1, -1]
+    congruency: "incongruent"
+    correct_key: "y"
+  - word: "黄"
+    ink_color_name: "red"
+    ink_color_rgb: [1, -1, -1]
+    congruency: "incongruent"
+    correct_key: "r"
+
+trial_structure:
+  # trial 由通用 event 组成。新增实验时优先改这里，而不是改生成器。
+  events:
+    - id: "fixation"
+      type: "text"
+      content: "+"
+      duration_ms: 500
+    - id: "stimulus"
+      type: "keyboard_response"
+      content: "$trial.word"
+      color: "$trial.ink_color_rgb"
+      choices: ["r", "g", "b", "y"]
+      correct_key: "$trial.correct_key"
+      max_duration_ms: 1500
+      response_ends_trial: true
+      record_response: true
+    - id: "feedback"
+      type: "feedback"
+      show_when: "block.feedback == true"
+      correct_content: "正确"
+      incorrect_content: "错误"
+      no_response_content: "请更快反应"
+      duration_ms: 500
+    - id: "iti"
+      type: "blank"
+      duration_ms:
+        random_uniform: [300, 700]
+
+blocks:
+  - id: "practice"
+    type: "practice"
+    instruction: "练习阶段：请忽略词义，按照墨水颜色按键。红=r，绿=g，蓝=b，黄=y。"
+    feedback: true
+    trials:
+      source: "conditions"
+      order: "random"
+      repetitions: 1
+  - id: "formal_1"
+    type: "formal"
+    instruction: "正式实验开始：规则相同，尽快且准确地反应。"
+    feedback: false
+    trials:
+      source: "conditions"
+      order: "random"
+      repetitions: 3
+
+data:
+  # 每个记录反应的 event 结束后写入一行。
+  fields:
+    - "participant_id"
+    - "block_id"
+    - "block_type"
+    - "trial_index_global"
+    - "trial_index_in_block"
+    - "event_id"
+    - "word"
+    - "ink_color_name"
+    - "congruency"
+    - "correct_key"
+    - "response"
+    - "rt"
+    - "correct"
+    - "timestamp"
+
+output:
+  format: "csv"
+  directory: "data"
+  filename_template: "{experiment_id}_{participant_id}_{date}.csv"

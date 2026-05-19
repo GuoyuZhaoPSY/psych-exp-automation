@@ -1,0 +1,35 @@
+# Generated Code Validation
+
+- Platform: `psychtoolbox`
+- Code: `/Users/guoyu/Documents/心理实验自动化/demo/stroop/psychtoolbox/stroop_color_word.m`
+- Result: `29/29` checks passed
+
+- PASS: initializes Psychtoolbox
+- PASS: opens PTB window
+- PASS: collects keyboard responses with frame loop
+- PASS: converts event durations to frame counts
+- PASS: uses screen flips for timed event presentation
+- PASS: keeps Psychtoolbox sync tests enabled
+- PASS: writes CSV data
+- PASS: embeds trial event sequence
+- PASS: contains event id fixation
+- PASS: contains duration fixation=500ms
+- PASS: contains event id stimulus
+- PASS: contains response window stimulus=1500ms
+- PASS: contains event id feedback
+- PASS: contains duration feedback=500ms
+- PASS: contains event id iti
+- PASS: contains data field participant_id
+- PASS: contains data field block_id
+- PASS: contains data field block_type
+- PASS: contains data field trial_index_global
+- PASS: contains data field trial_index_in_block
+- PASS: contains data field event_id
+- PASS: contains data field word
+- PASS: contains data field ink_color_name
+- PASS: contains data field congruency
+- PASS: contains data field correct_key
+- PASS: contains data field response
+- PASS: contains data field rt
+- PASS: contains data field correct
+- PASS: contains data field timestamp

@@ -1,0 +1,12 @@
+# Psych Experiment Automation
+
+Choose a language / 选择语言：
+
+- [中文说明](README.zh-CN.md)
+- [English README](README.en.md)
+
+Psych Experiment Automation is an open workflow for turning psychology experiment designs into `ExperimentSpec` YAML, reviewable pseudocode, and generated PsychoPy or Psychtoolbox code.
+
+心理学实验自动化工作流用于把心理学实验设计转换为 `ExperimentSpec` YAML、可审阅伪代码，以及 PsychoPy 或 Psychtoolbox 实验代码。
+
+License: [MIT](LICENSE)

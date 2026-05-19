@@ -1,0 +1,267 @@
+{
+  "version": "0.1.0",
+  "metadata": {
+    "experiment_id": "stroop_color_word",
+    "title": "颜色-词 Stroop 任务",
+    "purpose": "测量词义自动加工对墨水颜色命名的干扰。",
+    "paradigm_reference": "Stroop; optional label only"
+  },
+  "runtime": {
+    "language": "zh-CN",
+    "continue_key": "space",
+    "welcome_text": "请根据指导语完成实验。",
+    "end_text": "实验结束，感谢参与。",
+    "continue_text": "按空格键继续"
+  },
+  "target_platform": {
+    "default": "psychopy",
+    "supported": [
+      "psychopy",
+      "psychtoolbox"
+    ]
+  },
+  "participant": {
+    "collection_mode": "runtime_dialog",
+    "fields": [
+      {
+        "id": "participant_id",
+        "label": "被试编号",
+        "required": true
+      }
+    ]
+  },
+  "design": {
+    "design_type": "within_subject",
+    "independent_variables": [
+      {
+        "id": "congruency",
+        "name": "一致性",
+        "levels": [
+          "一致",
+          "不一致"
+        ]
+      }
+    ],
+    "dependent_variables": [
+      {
+        "id": "rt",
+        "name": "反应时",
+        "unit": "ms"
+      },
+      {
+        "id": "correct",
+        "name": "正确性",
+        "unit": "boolean"
+      }
+    ],
+    "randomization": "每个 block 内随机化 trial 顺序。",
+    "counterbalancing": "本示例不需要额外平衡。"
+  },
+  "display": {
+    "background_color": [
+      0,
+      0,
+      0
+    ],
+    "text_color": [
+      1,
+      1,
+      1
+    ],
+    "font_size": 48,
+    "screen_mode": "windowed"
+  },
+  "timing": {
+    "control": "frame",
+    "frame_rate_fallback_hz": 60,
+    "duration_rounding": "nearest_frame"
+  },
+  "response_mapping": {
+    "red": "r",
+    "green": "g",
+    "blue": "b",
+    "yellow": "y"
+  },
+  "conditions": [
+    {
+      "word": "红",
+      "ink_color_name": "red",
+      "ink_color_rgb": [
+        1,
+        -1,
+        -1
+      ],
+      "congruency": "congruent",
+      "correct_key": "r"
+    },
+    {
+      "word": "绿",
+      "ink_color_name": "green",
+      "ink_color_rgb": [
+        -1,
+        1,
+        -1
+      ],
+      "congruency": "congruent",
+      "correct_key": "g"
+    },
+    {
+      "word": "蓝",
+      "ink_color_name": "blue",
+      "ink_color_rgb": [
+        -1,
+        -1,
+        1
+      ],
+      "congruency": "congruent",
+      "correct_key": "b"
+    },
+    {
+      "word": "黄",
+      "ink_color_name": "yellow",
+      "ink_color_rgb": [
+        1,
+        1,
+        -1
+      ],
+      "congruency": "congruent",
+      "correct_key": "y"
+    },
+    {
+      "word": "红",
+      "ink_color_name": "green",
+      "ink_color_rgb": [
+        -1,
+        1,
+        -1
+      ],
+      "congruency": "incongruent",
+      "correct_key": "g"
+    },
+    {
+      "word": "绿",
+      "ink_color_name": "blue",
+      "ink_color_rgb": [
+        -1,
+        -1,
+        1
+      ],
+      "congruency": "incongruent",
+      "correct_key": "b"
+    },
+    {
+      "word": "蓝",
+      "ink_color_name": "yellow",
+      "ink_color_rgb": [
+        1,
+        1,
+        -1
+      ],
+      "congruency": "incongruent",
+      "correct_key": "y"
+    },
+    {
+      "word": "黄",
+      "ink_color_name": "red",
+      "ink_color_rgb": [
+        1,
+        -1,
+        -1
+      ],
+      "congruency": "incongruent",
+      "correct_key": "r"
+    }
+  ],
+  "trial_structure": {
+    "events": [
+      {
+        "id": "fixation",
+        "type": "text",
+        "content": "+",
+        "duration_ms": 500
+      },
+      {
+        "id": "stimulus",
+        "type": "keyboard_response",
+        "content": "$trial.word",
+        "color": "$trial.ink_color_rgb",
+        "choices": [
+          "r",
+          "g",
+          "b",
+          "y"
+        ],
+        "correct_key": "$trial.correct_key",
+        "max_duration_ms": 1500,
+        "response_ends_trial": true,
+        "record_response": true
+      },
+      {
+        "id": "feedback",
+        "type": "feedback",
+        "show_when": "block.feedback == true",
+        "correct_content": "正确",
+        "incorrect_content": "错误",
+        "no_response_content": "请更快反应",
+        "duration_ms": 500
+      },
+      {
+        "id": "iti",
+        "type": "blank",
+        "duration_ms": {
+          "random_uniform": [
+            300,
+            700
+          ]
+        }
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "practice",
+      "type": "practice",
+      "instruction": "练习阶段：请忽略词义，按照墨水颜色按键。红=r，绿=g，蓝=b，黄=y。",
+      "feedback": true,
+      "trials": {
+        "source": "conditions",
+        "order": "random",
+        "repetitions": 1
+      }
+    },
+    {
+      "id": "formal_1",
+      "type": "formal",
+      "instruction": "正式实验开始：规则相同，尽快且准确地反应。",
+      "feedback": false,
+      "trials": {
+        "source": "conditions",
+        "order": "random",
+        "repetitions": 3
+      }
+    }
+  ],
+  "data": {
+    "fields": [
+      "participant_id",
+      "block_id",
+      "block_type",
+      "trial_index_global",
+      "trial_index_in_block",
+      "event_id",
+      "word",
+      "ink_color_name",
+      "congruency",
+      "correct_key",
+      "response",
+      "rt",
+      "correct",
+      "timestamp"
+    ]
+  },
+  "output": {
+    "format": "csv",
+    "directory": "data",
+    "filename_template": "{experiment_id}_{participant_id}_{date}.csv"
+  }
+}
