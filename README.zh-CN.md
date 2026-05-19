@@ -1,6 +1,6 @@
 # 心理学实验自动化工作流
 
-[English](README.en.md) | 中文
+[English](README.md) | 中文
 
 心理学实验自动化工作流帮助研究者把实验设计转化为一套可复现、可检查、可协作的编程流程：
 
@@ -12,6 +12,23 @@
 
 这个项目的目标是降低心理学、认知科学、认知神经科学研究者的 coding 门槛，同时不把实验限制在固定的经典范式列表里。Stroop、Flanker、Go/No-Go、N-back 等名称可以作为参考标签，但系统真正使用的是通用的 `block -> trial -> event` 结构。
 
+## Codex 生成说明
+
+本仓库由 Codex 辅助搭建并迭代生成。生成内容包括工作流脚本、可安装的 Codex Skill、demo 实验和验证产物。研究者仍然需要进行人工审查：生成的实验代码在正式采集数据前必须经过代码检查、pilot test 和目标机器上的时序验证。
+
+## 这个项目在做什么
+
+这个项目不是要求研究者直接从零编写 PsychoPy 或 Psychtoolbox 代码，而是让研究者先用结构化 YAML 描述实验。YAML 作为实验设计和可执行代码之间的桥梁。
+
+它的好处包括：
+
+- 让实验逻辑更容易阅读和讨论
+- 把设计、伪代码、生成代码和验证报告放在同一个实验文件夹
+- 减少重复样板代码
+- 支持中文、英文或其他自然语言实验文本
+- 保留一份机器可检查的唯一真源
+- 鼓励视觉事件使用 frame-level timing control
+
 ## 核心原则
 
 - `experiment_spec.yaml` 是唯一真源。
@@ -20,6 +37,75 @@
 - 定时事件使用 frame-level timing control。
 - 第一版支持 PsychoPy 和 Psychtoolbox。
 - 生成代码必须在正式采集数据前人工检查、试运行和 pilot test。
+
+## 最小 YAML 示例
+
+下面是一个简化版 `ExperimentSpec`。完整 Stroop 示例见 [demo/stroop/experiment_spec.yaml](demo/stroop/experiment_spec.yaml)。
+
+```yaml
+version: "0.1.0"
+
+metadata:
+  experiment_id: "simple_reaction_time"
+  title: "简单反应时任务"
+  purpose: "测量被试对视觉目标的反应速度。"
+
+runtime:
+  language: "zh-CN"
+  continue_key: "space"
+  welcome_text: "目标出现后请尽快按键。"
+  end_text: "实验结束，感谢参与。"
+  continue_text: "按空格键继续"
+
+target_platform:
+  default: "psychopy"
+  supported: ["psychopy", "psychtoolbox"]
+
+timing:
+  control: "frame"
+  frame_rate_fallback_hz: 60
+  duration_rounding: "nearest_frame"
+
+conditions:
+  - stimulus: "X"
+    correct_key: "space"
+
+trial_structure:
+  events:
+    - id: "fixation"
+      type: "text"
+      content: "+"
+      duration_ms: 500
+    - id: "target"
+      type: "keyboard_response"
+      content: "$trial.stimulus"
+      choices: ["space"]
+      correct_key: "$trial.correct_key"
+      max_duration_ms: 1500
+      record_response: true
+    - id: "iti"
+      type: "blank"
+      duration_ms:
+        random_uniform: [500, 1000]
+
+blocks:
+  - id: "main"
+    type: "formal"
+    instruction: "请尽快且准确地反应。"
+    feedback: false
+    trials:
+      source: "conditions"
+      order: "random"
+      repetitions: 20
+
+data:
+  fields: ["participant_id", "block_id", "event_id", "response", "rt", "correct", "timestamp"]
+
+output:
+  format: "csv"
+  directory: "data"
+  filename_template: "{experiment_id}_{participant_id}_{date}.csv"
+```
 
 ## 仓库结构
 
@@ -86,7 +172,7 @@ demo/stroop/psychtoolbox/validation_report.md
 发布到 GitHub 后，可以让 Codex 安装：
 
 ```text
-Use skill-installer to install the skill from <your-name>/psych-exp-automation at skills/psych-exp-automation.
+Use skill-installer to install the skill from GuoyuZhaoPSY/psych-exp-automation at skills/psych-exp-automation.
 ```
 
 也可以手动安装：
