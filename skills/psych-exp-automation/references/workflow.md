@@ -8,6 +8,13 @@
 4. PsychoPy 或 Psychtoolbox 代码
 5. 验证报告
 
+也支持逆向工作流：
+
+1. 读取已有 PsychoPy 或 Psychtoolbox 代码
+2. 生成 `reverse/reversed_experiment_spec.yaml`
+3. 生成面向研究者阅读的 `reverse/design_description.md`
+4. 生成 `reverse/reverse_report.md`，记录已解析内容、推断内容和 TODO
+
 ## 设计原则
 
 - 不限定经典范式。Stroop、Flanker、Go/No-Go 等只作为参考标签，不作为能力边界。
@@ -18,6 +25,7 @@
 - 实验运行时呈现语言由 `runtime.language` 指定。
 - 编写实验代码时，所有定时事件按 frame 控制：将毫秒时长换算为屏幕刷新帧数，每一帧执行一次 flip，避免长实验或神经影像同步场景中的时间漂移。
 - Psychtoolbox 代码默认保留同步测试，不使用 `SkipSyncTests = 1` 作为正式实验代码。
+- 逆向手写代码采用 best-effort 策略，不能确认的内容保留为 TODO，不伪造实验设计意图。
 
 ## 文件组织
 
@@ -53,6 +61,22 @@ demo/
 ```bash
 python3 scripts/run_pipeline.py demo/stroop/experiment_spec.yaml --platform psychopy
 python3 scripts/run_pipeline.py demo/stroop/experiment_spec.yaml --platform psychtoolbox
+```
+
+逆向已有代码：
+
+```bash
+python3 scripts/reverse_engineer.py demo/stroop/psychopy/run_experiment.py
+```
+
+输出：
+
+```text
+demo/stroop/reverse/
+  reversed_experiment_spec.yaml
+  design_description.md
+  reverse_report.md
+  llm_prompt.md
 ```
 
 ## 后续扩展方向

@@ -5,7 +5,7 @@ description: Generate psychology experiment specifications, pseudocode, PsychoPy
 
 # Psych Experiment Automation
 
-Use this skill when a user wants to design, specify, generate, or validate code for a psychology experiment. The workflow is not limited to classic paradigms; represent experiments as generic `blocks`, `trials`, and `events`.
+Use this skill when a user wants to design, specify, generate, reverse engineer, or validate code for a psychology experiment. The workflow is not limited to classic paradigms; represent experiments as generic `blocks`, `trials`, and `events`.
 
 ## Core Rules
 
@@ -15,6 +15,7 @@ Use this skill when a user wants to design, specify, generate, or validate code 
 - Platform is selected with `target_platform.default`: `psychopy` or `psychtoolbox`.
 - Timed visual events must use frame-level control: convert milliseconds to frame counts and flip once per screen refresh frame.
 - Psychtoolbox generation must keep sync tests enabled.
+- Reverse engineering is best-effort for hand-written PsychoPy/Psychtoolbox code; keep TODO values when source evidence is missing.
 - If information is missing, ask only for details that block programming or validation.
 
 ## Experiment Folder Layout
@@ -49,6 +50,25 @@ Validate only:
 ```bash
 python3 <skill_dir>/scripts/validate_spec.py /path/to/my_experiment/experiment_spec.yaml
 ```
+
+Reverse engineer existing code:
+
+```bash
+python3 <skill_dir>/scripts/reverse_engineer.py /path/to/my_experiment/psychopy/run_experiment.py --platform auto
+python3 <skill_dir>/scripts/reverse_engineer.py /path/to/my_experiment/psychtoolbox/my_experiment_id.m --platform auto
+```
+
+Reverse outputs are written to `reverse/` in the experiment folder:
+
+```text
+reverse/
+  reversed_experiment_spec.yaml
+  design_description.md
+  reverse_report.md
+  llm_prompt.md
+```
+
+If `reverse_report.md` contains TODO items, read the original code, `reversed_experiment_spec.yaml`, and `reverse_report.md`; only fill fields when the source code provides evidence. Do not invent research intent or design variables.
 
 ## Specification Guidance
 

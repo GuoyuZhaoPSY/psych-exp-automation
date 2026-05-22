@@ -12,6 +12,8 @@
 
 这个项目的目标是降低心理学、认知科学、认知神经科学研究者的 coding 门槛，同时不把实验限制在固定的经典范式列表里。Stroop、Flanker、Go/No-Go、N-back 等名称可以作为参考标签，但系统真正使用的是通用的 `block -> trial -> event` 结构。
 
+本项目也支持逆向工作流：已有 PsychoPy 或 Psychtoolbox 代码可以被转换回 YAML 草案和自然语言实验说明。这适合用于理解、迁移或重构旧实验脚本。
+
 ## Codex 生成说明
 
 本仓库由 Codex 辅助搭建并迭代生成。生成内容包括工作流脚本、可安装的 Codex Skill、demo 实验和验证产物。研究者仍然需要进行人工审查：生成的实验代码在正式采集数据前必须经过代码检查、pilot test 和目标机器上的时序验证。
@@ -28,6 +30,7 @@
 - 支持中文、英文或其他自然语言实验文本
 - 保留一份机器可检查的唯一真源
 - 鼓励视觉事件使用 frame-level timing control
+- 帮助从已有 PsychoPy/Psychtoolbox 代码恢复实验文档
 
 ## 核心原则
 
@@ -166,6 +169,32 @@ demo/stroop/psychopy/validation_report.md
 demo/stroop/psychtoolbox/stroop_color_word.m
 demo/stroop/psychtoolbox/validation_report.md
 ```
+
+## 逆向工程
+
+逆向工程会把已有代码转换为：
+
+```text
+reverse/
+  reversed_experiment_spec.yaml
+  design_description.md
+  reverse_report.md
+  llm_prompt.md
+```
+
+运行示例：
+
+```bash
+python3 scripts/reverse_engineer.py demo/stroop/psychopy/run_experiment.py
+```
+
+逆向优先级：
+
+1. 如果存在 `experiment_spec.snapshot.json`，直接从 snapshot 还原
+2. 如果是本项目生成的 PsychoPy/Psychtoolbox 代码，读取内嵌常量
+3. 如果是手写 PsychoPy/Psychtoolbox 代码，使用 best-effort 启发式解析
+
+对于手写代码，生成的 YAML 是草案。无法确定或存在歧义的信息会保留为 `TODO`，并写入 `reverse_report.md`。逆向工作流适合理解和迁移旧代码，但不能保证完整恢复原始研究意图。
 
 ## 作为 Codex Skill 安装
 

@@ -12,6 +12,8 @@ Psych Experiment Automation helps researchers turn psychology experiment designs
 
 The goal is to lower the coding barrier for psychology, cognitive science, and cognitive neuroscience researchers without forcing experiments into a fixed list of classic paradigms. Names such as Stroop, Flanker, Go/No-Go, and N-back can be useful references, but the system represents experiments as generic `block -> trial -> event` structures.
 
+The project also supports a reverse workflow: existing PsychoPy or Psychtoolbox code can be converted back into a draft YAML spec and a natural-language design description. This is useful for understanding, migrating, or refactoring old experiment scripts.
+
 ## Codex-Generated Project
 
 This repository was scaffolded and iteratively generated with Codex by OpenAI. The generated files include the workflow scripts, the installable Codex Skill, the demo experiment, and the validation artifacts. Human review is still required: generated experiment code should be inspected, pilot-tested, and timing-checked on the target machine before real data collection.
@@ -28,6 +30,7 @@ Benefits:
 - supports both Chinese and English experiment text
 - preserves a machine-checkable source of truth
 - encourages frame-level timing control for visual events
+- helps recover documentation from existing PsychoPy/Psychtoolbox code
 
 ## Core Principles
 
@@ -166,6 +169,32 @@ demo/stroop/psychopy/validation_report.md
 demo/stroop/psychtoolbox/stroop_color_word.m
 demo/stroop/psychtoolbox/validation_report.md
 ```
+
+## Reverse Engineering
+
+Reverse engineering converts existing code into:
+
+```text
+reverse/
+  reversed_experiment_spec.yaml
+  design_description.md
+  reverse_report.md
+  llm_prompt.md
+```
+
+Run:
+
+```bash
+python3 scripts/reverse_engineer.py demo/stroop/psychopy/run_experiment.py
+```
+
+The reverse workflow uses this priority:
+
+1. restore from `experiment_spec.snapshot.json` when available
+2. recover embedded constants from generated PsychoPy/Psychtoolbox code
+3. apply best-effort heuristics to hand-written PsychoPy/Psychtoolbox code
+
+For hand-written code, the generated YAML is a draft. Unknown or ambiguous details are kept as `TODO` items and summarized in `reverse_report.md`. The workflow is meant to support understanding and migration; it cannot guarantee recovery of the original research intent.
 
 ## Install as a Codex Skill
 

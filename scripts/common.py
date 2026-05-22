@@ -32,6 +32,22 @@ def dump_json(data: Any, path: str | Path) -> None:
     Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def dump_yaml(data: Any, path: str | Path) -> None:
+    """Write YAML through Ruby's stdlib Psych so this project has no Python YAML dependency."""
+    path = Path(path)
+    ruby = (
+        "require 'json'; require 'yaml'; "
+        "obj = JSON.parse(STDIN.read); "
+        "File.write(ARGV[0], YAML.dump(obj))"
+    )
+    subprocess.run(
+        ["ruby", "-e", ruby, str(path)],
+        input=json.dumps(data, ensure_ascii=False),
+        check=True,
+        text=True,
+    )
+
+
 def read_spec(path: str | Path) -> dict[str, Any]:
     spec = load_yaml(path)
     spec["_source_path"] = str(Path(path).resolve())
